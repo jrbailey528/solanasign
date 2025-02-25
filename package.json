@@ -1,13 +1,13 @@
 {
   "name": "solanasign",
   "version": "1.0.0",
-  "main": "index.js",
+  "description": "Ticket platform with Solana integration",
+  "main": "backend/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node backend/server.js"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
-  "description": ""
+  "license": "ISC"
 }
