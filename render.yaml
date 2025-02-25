@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: solanasign-backend
+    env: node
+    buildCommand: npm install
+    startCommand: node backend/server.js
+    envVars:
+      - key: JWT_SECRET
+        value: mysecretjwtsignkey123
+      - key: SOLANA_RPC_URL
+        value: https://api.mainnet-beta.solana.com
+      - key: AUTHORITY_PRIVATE_KEY
+        value: 0,0,0,0,0
+      - key: CREATOR_ADDRESS
+        value: placeholder_address

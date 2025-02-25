@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | SolanaSign</title>
+    <style>
+        :root {
+            --primary-color: #1E60FF;
+            --secondary-color: #FF5757;
+            --dark-gray: #333;
+            --light-gray: #f5f5f5;
+            --medium-gray: #ccc;
+            --white: #fff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+        }
+        
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .search-container {
+            flex-grow: 1;
+            margin: 0 30px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--medium-gray);
+            font-size: 16px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-gray);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-link {
+            margin-left: 25px;
+            text-decoration: none;
+            color: var(--dark-gray);
+            font-weight: 500;
+        }
+        
+        .user-menu {
+            position: relative;
+        }
+        
+        .user-button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        
+        .dropdown-menu {
+            position: absolute;
+            right: 0;
+            top: 45px;
+            background-color: var(--white);
+            min-width: 200px;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            padding: 10px 0;
+            display: none;
+        }
+        
+        .dropdown-menu.show {
+            display: block;
+        }
+        
+        .dropdown-item {
+            padding: 10px 20px;
+            color: var(--dark-gray);
+            text-decoration: none;
+            display: block;
+        }
+        
+        .dropdown-item:hover {
+            background-color: var(--light-gray);
+        }
+        
+        .main-content {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+        
+        .sidebar {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+        
+        .user-profile {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .user-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: var(--white);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 48px;
+            font-weight: bold;
+            margin: 0 auto 15px;
+        }
+        
+        .user-name {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .user-email {
+            color: #777;
+            margin-bottom: 15px;
+        }
+        
+        .edit-profile-btn {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .edit-profile-btn:hover {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .nav-menu {
+            list-style: none;
+        }
+        
+        .nav-menu-item {
+            margin-bottom: 5px;
+        }
+        
+        .nav-menu-link {
+            display: block;
+            padding: 12px 15px;
+            border-radius: 5px;
+            color: var(--dark-gray);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-menu-link.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+        }
+        
+        .nav-menu-link:hover:not(.active) {
+            background-color: var(--light-gray);
+        }
+        
+        .content-area {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .section {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .section-title {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .tickets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        
+        .ticket-card {
+            border: 1px solid var(--medium-gray);
+            border-radius: 10px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+        
+        .ticket-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .ticket-img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+        }
+        
+        .ticket-info {
+            padding: 20px;
+        }
+        
+        .ticket-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+        
+        .ticket-details {
+            margin-bottom: 5px;
+            color: #777;
+        }
+        
+        .ticket-status {
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+        
+        .status-active {
+            background-color: #e6f7ff;
+            color: #0085ff;
+        }
+        
+        .status-past {
+            background-color: #f5f5f5;
+            color: #999;
+        }
+        
+        .status-transferred {
+            background-color: #fff7e6;
+            color: #fa8c16;
+        }
+        
+        .status-listed {
+            background-color: #f6ffed;
+            color: #52c41a;
+        }
+        
+        .view-button {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            padding: 8px;
+            border-radius: 5px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .view-button:hover {
+            background-color: #0052cc;
+        }
+        
+        .payment-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+        
+        .payment-card {
+            border: 1px solid var(--medium-gray);
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .card-type {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .card-logo {
+            width: 50px;
+            height: 30px;
+            background-color: var(--light-gray);
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        
+        .card-number {
+            font-weight: 500;
+            margin-bottom: 5px;
+        }
+        
+        .card-expiry {
+            color: #777;
+            font-size: 14px;
+        }
+        
+        .card-actions {
+            margin-top: 15px;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .card-action {
+            color: var(--primary-color);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .add-payment-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            border: 2px dashed var(--medium-gray);
+            border-radius: 10px;
+            color: #777;
+            font-weight: 500;
+            cursor: pointer;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .add-payment-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .transaction-history {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .transaction-history th,
+        .transaction-history td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--medium-gray);
+        }
+        
+        .transaction-history th {
+            font-weight: 600;
+            color: var(--dark-gray);
+        }
+        
+        .transaction-id {
+            color: var(--primary-color);
+            font-family: monospace;
+        }
+        
+        .transaction-amount {
+            font-weight: 600;
+        }
+        
+        .amount-positive {
+            color: #52c41a;
+        }
+        
+        .amount-negative {
+            color: var(--secondary-color);
+        }
+        
+        .transaction-date,
+        .transaction-status {
+            color: #777;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        
+        .pagination-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border: 1px solid var(--medium-gray);
+            margin: 0 5px;
+            border-radius: 5px;
+            cursor: pointer;
+            color: var(--dark-gray);
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        
+        .pagination-btn.active {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border-color: var(--primary-color);
+        }
+        
+        @media (max-width: 992px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                order: 2;
+            }
+            
+            .content-area {
+                order: 1;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 10px 15px;
+                flex-wrap: wrap;
+            }
+            
+            .search-container {
+                order: 3;
+                width: 100%;
+                margin: 15px 0 0;
+            }
+            
+            .tickets-grid,
+            .payment-methods {
+                grid-template-columns: 1fr;
+            }
+            
+            .main-content {
+                padding: 0 15px;
+            }
+            
+            .transaction-history {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo">SolanaSign</a>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search for events, venues, or artists">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link">Help</a>
+                <div class="user-menu">
+                    <div class="user-button">JS</div>
+                    <div class="dropdown-menu" id="userDropdown">
+                        <a href="#" class="dropdown-item">Profile</a>
+                        <a href="#" class="dropdown-item">My Tickets</a>
+                        <a href="#" class="dropdown-item">Account Settings</a>
+                        <a href="#" class="dropdown-item">Sign Out</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <aside class="sidebar">
+            <div class="user-profile">
+                <div class="user-avatar">JS</div>
+                <h2 class="user-name">John Smith</h2>
+                <p class="user-email">john.smith@example.com</p>
+                <button class="edit-profile-btn">Edit Profile</button>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-menu-item">
+                    <a href="#" class="nav-menu-link active">My Tickets</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a href="#" class="nav-menu-link">Purchase History</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a href="#" class="nav-menu-link">Payment Methods</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a href="#" class="nav-menu-link">Account Settings</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a href="#" class="nav-menu-link">Favorites</a>
+                </li>
+                <li class="nav-menu-item">
+                    <a href="#" class="nav-menu-link">Notifications</a>
+                </li>
+            </ul>
+        </aside>
+        
+        <div class="content-area">
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">My Tickets</h2>
+                </div>
+                <div class="tickets-grid">
+                    <div class="ticket-card">
+                        <img src="/api/placeholder/300/150" alt="Event" class="ticket-img">
+                        <div class="ticket-info">
+                            <h3 class="ticket-title">Taylor Swift - The Eras Tour</h3>
+                            <p class="ticket-details">Mar 15, 2025 • 7:00 PM</p>
+                            <p class="ticket-details">Madison Square Garden - New York, NY</p>
+                            <p class="ticket-details">Section A, Row 12, Seat 5</p>
+                            <span class="ticket-status status-active">Active</span>
+                            <a href="#" class="view-button">View Ticket</a>
+                        </div>
+                    </div>
+                    <div class="ticket-card">
+                        <img src="/api/placeholder/300/150" alt="Event" class="ticket-img">
+                        <div class="ticket-info">
+                            <h3 class="ticket-title">NBA: Lakers vs. Warriors</h3>
+                            <p class="ticket-details">Mar 5, 2025 • 8:00 PM</p>
+                            <p class="ticket-details">Staples Center - Los Angeles, CA</p>
+                            <p class="ticket-details">Section 114, Row 20, Seat 8</p>
+                            <span class="ticket-status status-active">Active</span>
+                            <a href="#" class="view-button">View Ticket</a>
+                        </div>
+                    </div>
+                    <div class="ticket-card">
+                        <img src="/api/placeholder/300/150" alt="Event" class="ticket-img">
+                        <div class="ticket-info">
+                            <h3 class="ticket-title">Coldplay - Music of the Spheres Tour</h3>
+                            <p class="ticket-details">Mar 22, 2025 • 8:00 PM</p>
+                            <p class="ticket-details">MetLife Stadium - East Rutherford, NJ</p>
+                            <p class="ticket-details">Section 101, Row 15, Seat 22</p>
+                            <span class="ticket-status status-listed">Listed for Sale</span>
+                            <a href="#" class="view-button">View Listing</a>
+                        </div>
+                    </div>
+                    <div class="ticket-card">
+                        <img src="/api/placeholder/300/150" alt="Event" class="ticket-img">
+                        <div class="ticket-info">
+                            <h3 class="ticket-title">Hamilton: The Musical</h3>
+                            <p class="ticket-details">Feb 10, 2025 • 7:30 PM</p>
+                            <p class="ticket-details">Richard Rodgers Theatre - New York, NY</p>
+                            <p class="ticket-details">Orchestra, Row F, Seat 108</p>
+                            <span class="ticket-status status-past">Past Event</span>
+                            <a href="#" class="view-button">View Details</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Payment Methods</h2>
+                </div>
+                <div class="payment-methods">
+                    <div class="payment-card">
+                        <div class="card-type">
+                            <div class="card-logo">VISA</div>
+                            <span>Visa ending in 4242</span>
+                        </div>
+                        <p class="card-expiry">Expires 09/27</p>
+                        <div class="card-actions">
+                            <button class="card-action">Edit</button>
+                            <button class="card-action">Remove</button>
+                        </div>
+                    </div>
+                    <div class="payment-card">
+                        <div class="card-type">
+                            <div class="card-logo">MC</div>
+                            <span>Mastercard ending in 8888</span>
+                        </div>
+                        <p class="card-expiry">Expires 12/26</p>
+                        <div class="card-actions">
+                            <button class="card-action">Edit</button>
+                            <button class="card-action">Remove</button>
+                        </div>
+                    </div>
+                    <div class="add-payment-btn">
+                        + Add Payment Method
+                    </div>
+                </div>
+            </section>
+            
+            <section class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Transaction History</h2>
+                </div>
+                <table class="transaction-history">
+                    <thead>
+                        <tr>
+                            <th>Transaction ID</th>
+                            <th>Event</th>
+                            <th>Date</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="transaction-id">TXN-482953</td>
+                            <td>Taylor Swift - The Eras Tour</td>
+                            <td class="transaction-date">Feb 15, 2025</td>
+                            <td class="transaction-amount amount-negative">-$199.00</td>
+                            <td class="transaction-status">Completed</td>
+                        </tr>
+                        <tr>
+                            <td class="transaction-id">TXN-482872</td>
+                            <td>NBA: Lakers vs. Warriors</td>
+                            <td class="transaction-date">Feb 10, 2025</td>
+                            <td class="transaction-amount amount-negative">-$85.00</td>
+                            <td class="transaction-status">Completed</td>
+                        </tr>
+                        <tr>
+                            <td class="transaction-id">TXN-481994</td>
+                            <td>Hamilton: The Musical</td>
+                            <td class="transaction-date">Jan 20, 2025</td>
+                            <td class="transaction-amount amount-negative">-$179.00</td>
+                            <td class="transaction-status">Completed</td>
+                        </tr>
+                        <tr>
+                            <td class="transaction-id">TXN-481432</td>
+                            <td>Dave Chappelle Live</td>
+                            <td class="transaction-date">Jan 15, 2025</td>
+                            <td class="transaction-amount amount-positive">+$110.00</td>
+                            <td class="transaction-status">Resale Completed</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="pagination">
+                    <div class="pagination-btn">«</div>
+                    <div class="pagination-btn active">1</div>
+                    <div class="pagination-btn">2</div>
+                    <div class="pagination-btn">3</div>
+                    <div class="pagination-btn">»</div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="#">Customer Support</a></li>
+                    <li><a href="#">My Account</a></li>
+                    <li><a href="#">Purchase Policy</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Our Company</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">News</a></li>
+                    <li><a href="#">Investors</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Partners</h3>
+                <ul>
+                    <li><a href="#">Venues</a></li>
+                    <li><a href="#">Advertisers</a></li>
+                    <li><a href="#">Promoters</a></li>
+                    <li><a href="#">Developers</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Follow Us</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2025 SolanaSign. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Toggle user dropdown menu
+        document.querySelector('.user-button').addEventListener('click', function() {
+            document.getElementById('userDropdown').classList.toggle('show');
+        });
+        
+        // Close dropdown when clicking outside
+        window.addEventListener('click', function(event) {
+            if (!event.target.matches('.user-button')) {
+                const dropdown = document.getElementById('userDropdown');
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
