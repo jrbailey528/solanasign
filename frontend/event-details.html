@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Details | SolanaSign</title>
+    <style>
+        :root {
+            --primary-color: #1E60FF;
+            --secondary-color: #FF5757;
+            --dark-gray: #333;
+            --light-gray: #f5f5f5;
+            --medium-gray: #ccc;
+            --white: #fff;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--light-gray);
+        }
+        
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .search-container {
+            flex-grow: 1;
+            margin: 0 30px;
+            position: relative;
+        }
+        
+        .search-input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border-radius: 20px;
+            border: 1px solid var(--medium-gray);
+            font-size: 16px;
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark-gray);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+        }
+        
+        .nav-link {
+            margin-left: 25px;
+            text-decoration: none;
+            color: var(--dark-gray);
+            font-weight: 500;
+        }
+        
+        .sign-in-btn, .sign-up-btn {
+            background-color: transparent;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .sign-up-btn {
+            color: var(--primary-color);
+        }
+        
+        .main-content {
+            max-width: 1400px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+        
+        .breadcrumb {
+            margin-bottom: 20px;
+            color: var(--dark-gray);
+        }
+        
+        .breadcrumb a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        
+        .event-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+        
+        .event-details {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .event-header {
+            margin-bottom: 30px;
+        }
+        
+        .event-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            color: var(--dark-gray);
+        }
+        
+        .event-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .event-date, .event-venue {
+            margin-right: 20px;
+            padding-right: 20px;
+            border-right: 1px solid var(--medium-gray);
+            font-size: 18px;
+            color: var(--dark-gray);
+        }
+        
+        .event-venue {
+            border-right: none;
+        }
+        
+        .event-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+        
+        .event-description {
+            margin-bottom: 30px;
+            line-height: 1.6;
+            color: var(--dark-gray);
+        }
+        
+        .event-info-block {
+            margin-bottom: 30px;
+        }
+        
+        .info-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--dark-gray);
+        }
+        
+        .info-list {
+            list-style: none;
+        }
+        
+        .info-item {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+            line-height: 1.6;
+        }
+        
+        .info-item:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary-color);
+        }
+        
+        .ticket-sidebar {
+            background-color: var(--white);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .sidebar-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            color: var(--dark-gray);
+        }
+        
+        .ticket-options {
+            margin-bottom: 30px;
+        }
+        
+        .ticket-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .ticket-type {
+            font-weight: 600;
+        }
+        
+        .ticket-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .ticket-action {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            margin-right: 20px;
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            border: 1px solid var(--medium-gray);
+            background-color: var(--white);
+            font-size: 16px;
+            cursor: pointer;
+        }
+        
+        .quantity-input {
+            width: 40px;
+            text-align: center;
+            margin: 0 10px;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .buy-btn {
+            flex-grow: 1;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 12px;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .buy-btn:hover {
+            background-color: #1a50c7;
+        }
+        
+        .ticket-summary {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid var(--light-gray);
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .summary-label {
+            color: var(--dark-gray);
+        }
+        
+        .summary-value {
+            font-weight: 600;
+        }
+        
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--light-gray);
+            font-size: 18px;
+            font-weight: 700;
+        }
+        
+        .similar-events {
+            margin-top: 50px;
+        }
+        
+        .similar-title {
+            font-size: 28px;
+            margin-bottom: 20px;
+            color: var(--dark-gray);
+        }
+        
+        .events-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+        
+        .event-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .event-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .card-img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .card-info {
+            padding: 20px;
+        }
+        
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--dark-gray);
+        }
+        
+        .card-date {
+            color: var(--secondary-color);
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+        
+        .card-location {
+            color: var(--dark-gray);
+            margin-bottom: 15px;
+        }
+        
+        .card-price {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .status-on-sale {
+            background-color: #e6f7ff;
+            color: #0085ff;
+        }
+        
+        .status-sold-out {
+            background-color: #fff1f0;
+            color: #ff4d4f;
+        }
+        
+        .status-postponed {
+            background-color: #fffbe6;
+            color: #faad14;
+        }
+        
+        .status-canceled {
+            background-color: #f5f5f5;
+            color: #8c8c8c;
+        }
+        
+        footer {
+            background-color: var(--dark-gray);
+            color: var(--white);
+            padding: 50px 0;
+        }
+        
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+        }
+        
+        .footer-column h3 {
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .footer-column ul {
+            list-style: none;
+        }
+        
+        .footer-column li {
+            margin-bottom: 10px;
+        }
+        
+        .footer-column a {
+            color: var(--medium-gray);
+            text-decoration: none;
+        }
+        
+        .footer-column a:hover {
+            color: var(--white);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding: 20px 0;
+            background-color: #222;
+            color: var(--medium-gray);
+            font-size: 14px;
+        }
+        
+        @media (max-width: 992px) {
+            .event-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .ticket-sidebar {
+                position: static;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 10px 15px;
+                flex-wrap: wrap;
+            }
+            
+            .search-container {
+                order: 3;
+                width: 100%;
+                margin: 15px 0 0;
+            }
+            
+            .main-content {
+                padding: 0 15px;
+            }
+            
+            .event-meta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .event-date, .event-venue {
+                margin-right: 0;
+                padding-right: 0;
+                border-right: none;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <a href="index.html" class="logo">SolanaSign</a>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search for events, venues, or artists">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="nav-links">
+                <button class="sign-in-btn">Sign In</button>
+                <button class="sign-up-btn">Create Account</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <div class="breadcrumb">
+            <a href="index.html">Home</a> > <a href="index.html#events">Events</a> > <span id="event-breadcrumb">Event Details</span>
+        </div>
+        
+        <div class="event-container">
+            <div class="event-details">
+                <div class="event-header">
+                    <h1 class="event-title" id="event-title">Loading event details...</h1>
+                    <div class="event-meta">
+                        <div class="event-date" id="event-date">Date: Loading...</div>
+                        <div class="event-venue" id="event-venue">Venue: Loading...</div>
+                    </div>
+                    <div id="event-status"></div>
+                </div>
+                
+                <img src="/api/placeholder/800/400" alt="Event Image" class="event-image" id="event-image">
+                
+                <div class="event-description" id="event-description">
+                    Loading event description...
+                </div>
+                
+                <div class="event-info-block">
+                    <h2 class="info-title">Event Information</h2>
+                    <ul class="info-list">
+                        <li class="info-item" id="event-genre">Genre: Loading...</li>
+                        <li class="info-item" id="event-type">Type: Loading...</li>
+                        <li class="info-item" id="event-capacity">Venue Capacity: Loading...</li>
+                        <li class="info-item" id="event-available">Available Tickets: Loading...</li>
+                    </ul>
+                </div>
+                
+                <div class="event-info-block">
+                    <h2 class="info-title">Venue Information</h2>
+                    <ul class="info-list">
+                        <li class="info-item" id="venue-name">Name: Loading...</li>
+                        <li class="info-item" id="venue-location">Location: Loading...</li>
+                        <li class="info-item">Facilities: Accessible seating, Concessions, Merchandise, Restrooms</li>
+                        <li class="info-item">Parking: Available on-site (additional fees may apply)</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="ticket-sidebar">
+                <h2 class="sidebar-title">Tickets</h2>
+                <div class="ticket-options">
+                    <div class="ticket-option">
+                        <span class="ticket-type">General Admission</span>
+                        <span class="ticket-price" id="general-price">$0</span>
+                    </div>
+                    <div class="ticket-option">
+                        <span class="ticket-type">Premium</span>
+                        <span class="ticket-price" id="premium-price">$0</span>
+                    </div>
+                    <div class="ticket-option">
+                        <span class="ticket-type">VIP</span>
+                        <span class="ticket-price" id="vip-price">$0</span>
+                    </div>
+                </div>
+                
+                <div class="ticket-action">
+                    <div class="quantity-control">
+                        <button class="quantity-btn" onclick="decreaseQuantity()">-</button>
+                        <input type="text" class="quantity-input" id="ticket-quantity" value="1" readonly>
+                        <button class="quantity-btn" onclick="increaseQuantity()">+</button>
+                    </div>
+                    <button class="buy-btn" id="buy-ticket-btn">Buy Tickets</button>
+                </div>
+                
+                <div class="ticket-summary">
+                    <div class="summary-item">
+                        <span class="summary-label">Ticket Price:</span>
+                        <span class="summary-value" id="summary-price">$0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Quantity:</span>
+                        <span class="summary-value" id="summary-quantity">1</span>
+                    </div>
+                    <div class="summary-item">
+                        <span class="summary-label">Service Fee:</span>
+                        <span class="summary-value" id="summary-fee">$0</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total:</span>
+                        <span id="summary-total">$0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <section class="similar-events">
+            <h2 class="similar-title">Similar Events</h2>
+            <div class="events-grid" id="similar-events">
+                <!-- Similar events will be loaded dynamically via JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-column">
+                <h3>Help</h3>
+                <ul>
+                    <li><a href="#">Customer Support</a></li>
+                    <li><a href="#">My Account</a></li>
+                    <li><a href="#">Purchase Policy</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Our Company</h3>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">News</a></li>
+                    <li><a href="#">Investors</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Partners</h3>
+                <ul>
+                    <li><a href="#">Venues</a></li>
+                    <li><a href="#">Advertisers</a></li>
+                    <li><a href="#">Promoters</a></li>
+                    <li><a href="#">Developers</a></li>
+                </ul>
+            </div>
+            <div class="footer-column">
+                <h3>Follow Us</h3>
+                <ul>
+                    <li><a href="#">Facebook</a></li>
+                    <li><a href="#">Twitter</a></li>
+                    <li><a href="#">Instagram</a></li>
+                    <li><a href="#">YouTube</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="copyright">
+            © 2025 SolanaSign. All rights reserved.
+        </div>
+    </footer>
+
+    <script>
+        // Sample real event data (from the CSV)
+        const realEvents = [
+            {
+                id: "89d63fb7-77c5-438b-b9b0-47838f4b4ee7",
+                title: "Electronic Concert in Newark",
+                date: "2025-05-12",
+                venue: "Prudential Center",
+                location: "Newark, NJ",
+                generalPrice: 74,
+                premiumPrice: 140.76,
+                vipPrice: 281.99,
+                image: "/api/placeholder/800/400",
+                status: "On Sale",
+                category: "Concert",
+                genre: "Electronic",
+                description: "Experience an unforgettable night of electronic music at Newark's premier venue. This event features state-of-the-art sound systems and light shows for the ultimate concert experience.",
+                totalTickets: 17787,
+                availableTickets: 12497,
+                percentSold: 29.74
+            },
+            {
+                id: "1856acf5-bf70-4252-aaaa-6e575aed38ad",
+                title: "Pop Concert in Los Angeles",
+                date: "2025-07-01",
+                venue: "Staples Center",
+                location: "Los Angeles, CA",
+                generalPrice: 100,
+                premiumPrice: 245.48,
+                vipPrice: 480.67,
+                image: "/api/placeholder/800/400",
+                status: "On Sale",
+                category: "Concert",
+                genre: "Pop",
+                description: "Join us for an incredible pop music concert at the iconic Staples Center in Los Angeles. This event will showcase chart-topping hits and amazing performances.",
+                totalTickets: 17662,
+                availableTickets: 6118,
+                percentSold: 65.36
+            },
+            {
+                id: "25822c48-0563-48bd-8c44-ae0ca26e4ee5",
+                title: "Football Event in East Rutherford",
+                date: "2025-05-23",
+                venue: "MetLife Stadium",
+                location: "East Rutherford, NJ",
+                generalPrice: 131,
+                premiumPrice: 313.00,
+                vipPrice: 614.38,
+                image: "/api/placeholder/800/400",
+                status: "On Sale",
+                category: "Sports",
+                genre: "Football",
+                description: "Don't miss this exciting football matchup at MetLife Stadium. Experience the thrill of live football action in one of the nation's premier stadiums.",
+                totalTickets: 81463,
+                availableTickets: 30104,
+                percentSold: 63.05
+            },
+            {
+                id: "3520bd1e-d82d-402b-a127-8e3318672480",
+                title: "Circus Event in Nashville",
+                date: "2025-08-17",
+                venue: "Bridgestone Arena",
+                location: "Nashville, TN",
+                generalPrice: 133,
+                premiumPrice: 242.81,
+                vipPrice: 615.25,
+                image: "/api/placeholder/800/400",
+                status: "On Sale",
+                category: "Family",
+                genre: "Circus",
+                description: "Bring the whole family to enjoy an amazing circus performance featuring acrobats, clowns, and other spectacular acts. A memorable experience for all ages!",
+                totalTickets: 19685,
+                availableTickets: 4048,
+                percentSold: 79.44
+            },
+            {
+                id: "33545bec-ea31-474a-a2c1-a2930efcf101",
+                title: "Film Festival Event in Los Angeles",
+                date: "2025-07-08",
+                venue: "Staples Center",
+                location: "Los Angeles, CA",
+                generalPrice: 73,
+                premiumPrice: 156.31,
+                vipPrice: 298.82,
+                image: "/api/placeholder/800/400",
+                status: "On Sale",
+                category: "Festival",
+                genre: "Film Festival",
+                description: "Celebrate the art of cinema at this prestigious film festival. Enjoy screenings of groundbreaking films from around the world, along with talks from directors and actors.",
+                totalTickets: 18880,
+                availableTickets: 12596,
+                percentSold: 33.28
+            }
+        ];
+        
+        // Function to get URL parameters
+        function getUrlParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(param);
+        }
+        
+        // Function to format date
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+        
+        // Function to format currency
+        function formatCurrency(amount) {
+            return '$' + amount.toFixed(2);
+        }
+        
+        // Function to create event card HTML
+        function createEventCard(event) {
+            const statusClass = event.status.toLowerCase().replace(' ', '-');
+            return `
+                <div class="event-card">
+                    <img src="${event.image}" alt="${event.title}" class="card-img">
+                    <div class="card-info">
+                        <h3 class="card-title">${event.title}</h3>
+                        <p class="card-date">${formatDate(event.date)} <span class="status-badge status-${statusClass}">${event.status}</span></p>
+                        <p class="card-location">${event.venue} - ${event.location}</p>
+                        <p class="card-price">From ${formatCurrency(event.generalPrice)}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Function to load event details
+        function loadEventDetails() {
+            const eventId = getUrlParam('id');
+            
+            if (!eventId) {
+                // Redirect to home page if no event ID is provided
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Find the event with the matching ID
+            const event = realEvents.find(e => e.id === eventId);
+            
+            if (!event) {
+                // Display error message if event is not found
+                document.getElementById('event-title').textContent = 'Event Not Found';
+                document.getElementById('event-description').textContent = 'The requested event could not be found. Please check the URL and try again.';
+                return;
+            }
+            
+            // Update the breadcrumb
+            document.getElementById('event-breadcrumb').textContent = event.title;
+            
+            // Update event details
+            document.getElementById('event-title').textContent = event.title;
+            document.getElementById('event-date').textContent = 'Date: ' + formatDate(event.date);
+            document.getElementById('event-venue').textContent = 'Venue: ' + event.venue;
+            document.getElementById('event-image').src = event.image;
+            document.getElementById('event-image').alt = event.title;
+            document.getElementById('event-description').textContent = event.description;
+            
+            // Update event info
+            document.getElementById('event-genre').textContent = 'Genre: ' + event.genre;
+            document.getElementById('event-type').textContent = 'Type: ' + event.category;
+            document.getElementById('event-capacity').textContent = 'Venue Capacity: ' + event.totalTickets.toLocaleString();
+            document.getElementById('event-available').textContent = 'Available Tickets: ' + event.availableTickets.toLocaleString() + ' (' + (100 - event.percentSold).toFixed(1) + '% remaining)';
+            
+            // Update venue info
+            document.getElementById('venue-name').textContent = 'Name: ' + event.venue;
+            document.getElementById('venue-location').textContent = 'Location: ' + event.location;
+            
+            // Update status badge
+            const statusClass = event.status.toLowerCase().replace(' ', '-');
+            document.getElementById('event-status').innerHTML = `<span class="status-badge status-${statusClass}">${event.status}</span>`;
+            
+            // Update ticket prices
+            document.getElementById('general-price').textContent = formatCurrency(event.generalPrice);
+            document.getElementById('premium-price').textContent = formatCurrency(event.premiumPrice);
+            document.getElementById('vip-price').textContent = formatCurrency(event.vipPrice);
+            
+            // Update summary
+            updateTicketSummary(event.generalPrice);
+            
+            // Load similar events (events with the same category or genre)
+            loadSimilarEvents(event);
+            
+            // Set page title
+            document.title = event.title + " | SolanaSign";
+        }
+        
+        // Function to load similar events
+        function loadSimilarEvents(currentEvent) {
+            const similarEventsContainer = document.getElementById('similar-events');
+            
+            // Clear container
+            similarEventsContainer.innerHTML = '';
+            
+            // Filter events by category or genre, excluding the current event
+            const similarEvents = realEvents.filter(event => 
+                event.id !== currentEvent.id && 
+                (event.category === currentEvent.category || event.genre === currentEvent.genre)
+            ).slice(0, 3); // Show up to 3 similar events
+            
+            if (similarEvents.length === 0) {
+                similarEventsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center;">No similar events found.</p>';
+                return;
+            }
+            
+            // Populate similar events
+            similarEvents.forEach(event => {
+                similarEventsContainer.innerHTML += createEventCard(event);
+            });
+        }
+        
+        // Function to update ticket summary
+        function updateTicketSummary(price) {
+            const quantity = parseInt(document.getElementById('ticket-quantity').value);
+            const ticketPrice = price;
+            const serviceFee = ticketPrice * 0.15; // 15% service fee
+            const total = (ticketPrice + serviceFee) * quantity;
+            
+            document.getElementById('summary-price').textContent = formatCurrency(ticketPrice);
+            document.getElementById('summary-quantity').textContent = quantity;
+            document.getElementById('summary-fee').textContent = formatCurrency(serviceFee);
+            document.getElementById('summary-total').textContent = formatCurrency(total);
+        }
+        
+        // Function to decrease ticket quantity
+        function decreaseQuantity() {
+            const quantityInput = document.getElementById('ticket-quantity');
+            let quantity = parseInt(quantityInput.value);
+            
+            if (quantity > 1) {
+                quantity--;
+                quantityInput.value = quantity;
+                
+                const eventId = getUrlParam('id');
+                const event = realEvents.find(e => e.id === eventId);
+                
+                if (event) {
+                    updateTicketSummary(event.generalPrice);
+                }
+            }
+        }
+        
+        // Function to increase ticket quantity
+        function increaseQuantity() {
+            const quantityInput
+const quantityInput = document.getElementById('ticket-quantity');
+            let quantity = parseInt(quantityInput.value);
+            
+            quantity++;
+            quantityInput.value = quantity;
+            
+            const eventId = getUrlParam('id');
+            const event = realEvents.find(e => e.id === eventId);
+            
+            if (event) {
+                updateTicketSummary(event.generalPrice);
+            }
+        }
+        
+        // Buy ticket button handler
+        document.getElementById('buy-ticket-btn').addEventListener('click', function() {
+            const eventId = getUrlParam('id');
+            const event = realEvents.find(e => e.id === eventId);
+            const quantity = document.getElementById('ticket-quantity').value;
+            
+            if (event) {
+                alert(`Thank you for your purchase!\n\n${quantity} ticket(s) for "${event.title}" have been secured. You will receive an email confirmation shortly.`);
+            }
+        });
+        
+        // Load event details when the page loads
+        window.onload = function() {
+            loadEventDetails();
+        };
+    </script>
+</body>
+</html>
